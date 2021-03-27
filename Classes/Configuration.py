@@ -1,0 +1,77 @@
+import re
+from os.path import dirname, join, abspath
+from sys import platform
+import json
+
+
+class Configuration:
+    __assetPath = "Assets"
+    __config_name = "Configuration.json"
+    __config: dict = {}
+
+    @classmethod
+    def __init__(cls):
+        """
+        Load JSON file: {__assetsPath} / {__config_name}
+        """
+        cls.__config = json.loads(open(cls.getAssetPath([cls.__config_name]), "r").read())["configuration"]
+
+    @classmethod
+    def getAssetPath(cls, suffix: list = None):
+        """
+        Get base asset path
+        :param suffix: additions to base path
+        :return: base path (+ additions)
+        """
+        suffix = suffix if suffix is not None else []
+
+        # Is Windows path, is linux path
+        if re.search(r"(?=^[A-Za-z]+:\\.*|^\\.*|^/.*)", cls.__assetPath) is None:
+            directory = dirname(dirname(abspath(__file__)))
+            cls.__assetPath = join(directory, cls.__assetPath)
+
+        return join(cls.__assetPath, *suffix)
+
+    @classmethod
+    def getDriverPath(cls, driver_name):
+        """
+        Get browser driver module
+        :param driver_name: driver name
+        :return: path to driver binary
+        """
+        driver_conf: dict = cls.__config.get("drivers")
+        if driver_conf is not None:
+            assert all([key in driver_conf.keys() for key in (["suffix", driver_name] if platform == "win32"
+                                                              else [driver_name])])
+
+            driver_path = driver_conf.get(driver_name).get(platform)
+            if platform == "linux":
+                return driver_path
+            elif platform == "win32":
+                return cls.getAssetPath([driver_conf.get("suffix"), platform, driver_path])
+
+    @classmethod
+    def getRegistryKey(cls, program_name: str):
+        """
+        Get windows registration key
+        :param program_name: name of the program
+        :return: registration bindings for access
+        """
+        registry_conf: dict = cls.__config.get("registry")
+        if registry_conf is not None:
+            assert program_name in registry_conf.keys()
+
+            return tuple(registry_conf.get(program_name))
+
+    @classmethod
+    def getBrowserConfiguration(cls, config_key: str):
+        """
+        :param config_key:
+        :return:
+        """
+        browser_conf: dict = cls.__config.get("browser")
+        if browser_conf is not None:
+            assert config_key in browser_conf.keys()
+
+            result = browser_conf.get(config_key)
+            return result if "{ASSETS}" not in result else result.format(ASSETS=cls.getAssetPath())

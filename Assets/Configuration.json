@@ -1,0 +1,31 @@
+{
+	"configuration": 
+	{
+		"browser":
+		{
+			"download_path": "{ASSETS}\\Downloads"
+		},
+		"drivers": 
+		{
+			"suffix": "Drivers",
+			"chrome":
+			{
+				"win32": "chromedriver.exe",
+				"linux": "/usr/local/bin/chromedriver"
+			},
+			
+			"firefox":
+			{
+				"win32": "geckodriver.exe",
+				"linux": ""
+			}
+		},
+		"registry":
+		{
+			"firefox": [[["SOFTWARE\\Mozilla\\Mozilla Firefox", 0], ["Main", "PathToExe"]], 0],
+            "chrome": ["SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", 1],
+            "ie": ["SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\IEXPLORE.EXE", 1],
+            "edge": ["Computer\\HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe", 1]
+		}
+	}
+}

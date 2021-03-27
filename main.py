@@ -8,17 +8,18 @@ from Drivers.BrowserBot import BrowserBot
 registry = Registry()
 
 extensionLib: dict = {
+    "chrome":
+    [
+         "https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd?hl=en"
+         "https://chrome.google.com/webstore/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en",
+         "https://chrome.google.com/webstore/detail/pop-up-blocker-for-chrome/bkkbcggnhapdmkeljlodobbkopceiche?hl=en",
+        "https://chrome.google.com/webstore/detail/darkify/lchabmjccahchaflojonfbepjbbnipfc"
+    ],
     "firefox":
     [
         "https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/",
         "https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/",
         "https://addons.mozilla.org/en-US/firefox/addon/popup-blocker-ultimate/"
-    ],
-    "chrome":
-    [
-            "https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/",
-            "https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/",
-            "https://addons.mozilla.org/en-US/firefox/addon/popup-blocker-ultimate/"
     ]
 }
 
@@ -36,17 +37,20 @@ def downloadExtensions():
         for link in xpi_files:
             browser.downloadFile(link)
 
-        for file in [file for file in listdir(Configuration.getAssetPath()) if file.endswith(".xpi")]:
-            os.system(f'start "{binary_location}" '
-                      f'"{os.path.join(os.path.dirname(os.path.abspath(__file__)), "Assets", "Downloads", file)}"')
+        browser.installAddonsOnMainExecutable()
 
         browser.release()
 
+def test():
+    binary_location = registry.getInstallLocation("chrome")
+    browser = BrowserBot(binary_location)
+
+    browser.installAddonsOnMainExecutable()
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     Configuration()
     print()
-    downloadExtensions()
+    test()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

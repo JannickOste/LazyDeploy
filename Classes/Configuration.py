@@ -22,7 +22,7 @@ class Configuration:
         def replace_value(obj, search_value, rep_value):
             for k, v in obj.items():
                 if isinstance(v, dict):
-                    obj[k] = rep_value(v, search_value, rep_value)
+                    obj[k] = replace_value(v, search_value, rep_value)
                 elif isinstance(v, str):
                     obj[k] = v.replace(search_value, rep_value)
 

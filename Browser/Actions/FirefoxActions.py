@@ -7,6 +7,7 @@ from pyautogui import click
 from selenium.webdriver.common.by import By
 
 from Browser.Actions.IActions import IActions
+from Classes.ScreenSearch import ScreenSearch
 from Classes.Shell import Shell
 
 
@@ -40,7 +41,7 @@ class FirefoxActions(IActions, ABC):
                 loc = (0, 0)
                 attempts = 0
                 while loc == (0, 0) and attempts < 5:
-                    loc = self._bot.locateBoxOnScreen(rgb_color=(0, 96, 223), min_area=(175, 30))
+                    loc = ScreenSearch.locateBoxOnScreen(rgb_color=(0, 96, 223), min_area=(175, 30))
                     attempts += 1
                 if loc != (0, 0):
                     click(loc[0], loc[1])

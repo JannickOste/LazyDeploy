@@ -27,9 +27,13 @@ extensionLib: dict = {
 def downloadExtensions():
     for agent in extensionLib.keys():
         binary_location = registry.getInstallLocation(agent)
+
         browser = BrowserBot(binary_location)
         browser.start()
+
         browser.action.downloadAddons(extensionLib.get(agent))
+        browser.action.installAddons(addon_paths=list(browser.downloads.values()))
+
         browser.release()
 
 

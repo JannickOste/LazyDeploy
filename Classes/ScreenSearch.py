@@ -5,9 +5,8 @@ from pyautogui import screenshot
 
 
 class ScreenSearch:
-
     @staticmethod
-    def locateBoxOnScreen(self, rgb_color, min_area):
+    def locateBoxOnScreen(rgb_color, min_area):
         search_box = numpy.asarray(Image.new("RGB", min_area, color=rgb_color))
         desktop_image = numpy.asarray(screenshot())
 

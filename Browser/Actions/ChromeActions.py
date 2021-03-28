@@ -15,7 +15,7 @@ class ChromeActions(IActions, ABC):
     def __init__(self, bot):
         super().__init__(bot)
 
-    def installAddons(self, on_bot: bool = False):
+    def installAddons(self, on_bot: bool = False, addon_paths: list = None):
         download_path = self._bot.getConfig("download_path")
         downloads = listdir(download_path)
 
@@ -30,7 +30,7 @@ class ChromeActions(IActions, ABC):
                 with zipfile.ZipFile(extension_path, "r") as zip_obj:
                     zip_obj.extractall(extract_path)
 
-            subprocess.call([self.__binary_path, f'--load-extension="{extract_path}"'])
+            subprocess.call([self._bot.getConfig("executable_path"), f'--load-extension="{extract_path}"'])
 
         if self._bot.driver is not None:
             self._bot.start()

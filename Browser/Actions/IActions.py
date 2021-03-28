@@ -84,7 +84,7 @@ class IActions:
         if self.__target_driver is not None:
             self.start()
     """
-    def installAddons(self, on_bot: bool = False):
+    def installAddons(self, on_bot: bool = False, addon_paths: list = None):
         raise NotImplementedError
 
     """

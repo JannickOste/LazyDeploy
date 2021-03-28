@@ -3,7 +3,7 @@ from os import listdir
 
 from Classes.Configuration import Configuration
 from Classes.Registry import Registry
-from Drivers.BrowserBot import BrowserBot
+from Browser.BrowserBot import BrowserBot
 
 registry = Registry()
 
@@ -13,14 +13,14 @@ extensionLib: dict = {
         "https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/",
         "https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/",
         "https://addons.mozilla.org/en-US/firefox/addon/popup-blocker-ultimate/"
+    ],
+    "chrome":
+    [
+         "https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd?hl=en"
+         "https://chrome.google.com/webstore/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en",
+         "https://chrome.google.com/webstore/detail/pop-up-blocker-for-chrome/bkkbcggnhapdmkeljlodobbkopceiche?hl=en",
+         "https://chrome.google.com/webstore/detail/darkify/lchabmjccahchaflojonfbepjbbnipfc"
     ]
-    # "chrome":
-    # [
-    #      #"https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd?hl=en"
-    #      #"https://chrome.google.com/webstore/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en",
-    #      #"https://chrome.google.com/webstore/detail/pop-up-blocker-for-chrome/bkkbcggnhapdmkeljlodobbkopceiche?hl=en",
-    #      #"https://chrome.google.com/webstore/detail/darkify/lchabmjccahchaflojonfbepjbbnipfc"
-    # ]
 }
 
 
@@ -29,10 +29,9 @@ def downloadExtensions():
         binary_location = registry.getInstallLocation(agent)
         browser = BrowserBot(binary_location)
         browser.start()
-        browser.downloadAddons(extensionLib.get(agent))
-        browser.installAddons()
-
+        browser.action.downloadAddons(extensionLib.get(agent))
         browser.release()
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

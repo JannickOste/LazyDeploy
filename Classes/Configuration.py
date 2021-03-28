@@ -71,6 +71,9 @@ class Configuration:
         """
         browser_conf: dict = cls.__config.get("browser")
         if browser_conf is not None:
+            if config_key is None or len(config_key) == 0:
+                return browser_conf
+
             assert config_key in browser_conf.keys()
 
             result = browser_conf.get(config_key)

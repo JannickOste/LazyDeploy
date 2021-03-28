@@ -3,7 +3,7 @@
 	{
 		"browser":
 		{
-			"download_path": "{ASSETS}\\Downloads"
+			"download_path": "{ASSETS}/Downloads"
 		},
 		"drivers": 
 		{
@@ -11,13 +11,13 @@
 			"chrome":
 			{
 				"win32": "chromedriver.exe",
-				"linux": "/usr/local/bin/chromedriver"
+				"linux": "chromedriver"
 			},
 			
 			"firefox":
 			{
 				"win32": "geckodriver.exe",
-				"linux": ""
+				"linux": "geckodriver"
 			}
 		},
 		"registry":

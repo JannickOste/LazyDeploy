@@ -1,3 +1,4 @@
+import os
 from os import listdir
 from os.path import join, exists
 
@@ -96,9 +97,13 @@ class IActions:
 
     def download(self, uri: str) -> str:
         request = requests.get(uri, allow_redirects=True)
+        download_path = self._bot.getConfig("download_path")
         if request.status_code == 200:
+            if not os.path.exists(download_path):
+                os.mkdir(download_path)
+
             file_name = uri.split('/')[-1]
-            file_path = join(Configuration.getBrowserConfiguration("download_path"), file_name)
+            file_path = join(download_path, file_name)
 
             try:
                 open(file_path, "wb").write(request.content)

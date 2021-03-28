@@ -14,11 +14,11 @@ class Configuration:
         """
         Load JSON file: {__assetsPath} / {__config_name}
         """
-        cls.__config = cls.parseConfiguration()
+        cls.__config = cls.__parseConfiguration()
         print(cls.__config)
 
     @classmethod
-    def parseConfiguration(cls) -> dict:
+    def __parseConfiguration(cls) -> dict:
         def replace_value(obj, search_value, rep_value):
             for k, v in obj.items():
                 if isinstance(v, dict):
@@ -60,14 +60,14 @@ class Configuration:
         """
         driver_conf: dict = cls.__config.get("drivers")
         if driver_conf is not None:
+            print(driver_conf)
+            print(driver_name)
             assert all([key in driver_conf.keys() for key in (["suffix", driver_name] if platform == "win32"
                                                               else [driver_name])])
 
             driver_path = driver_conf.get(driver_name).get(platform)
-            if platform == "linux":
-                return driver_path
-            elif platform == "win32":
-                return cls.getAssetPath([driver_conf.get("suffix"), platform, driver_path])
+
+            return cls.getAssetPath([driver_conf.get("suffix"), platform, driver_path])
 
     @classmethod
     def getRegistryKey(cls, program_name: str):

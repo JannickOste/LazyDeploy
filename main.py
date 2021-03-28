@@ -1,11 +1,9 @@
-import os
-from os import listdir
+from sys import platform
 
-from Classes.Configuration import Configuration
 from Classes.Registry import Registry
+from Classes.Configuration import Configuration
 from Browser.BrowserBot import BrowserBot
 
-registry = Registry()
 
 extensionLib: dict = {
     "firefox":
@@ -25,10 +23,15 @@ extensionLib: dict = {
 
 
 def downloadExtensions():
+    registry = Registry()
+
     for agent in extensionLib.keys():
         binary_location = registry.getInstallLocation(agent)
+        if binary_location is None:
+            print(f"[ERROR_LOADING_AGENT]: Failed to load agent {agent}")
+            continue
 
-        browser = BrowserBot(binary_location)
+        browser = BrowserBot(browser_exec=binary_location)
         browser.start()
 
         browser.action.downloadAddons(extensionLib.get(agent))

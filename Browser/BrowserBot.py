@@ -1,4 +1,5 @@
 from os.path import exists
+from sys import platform
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
@@ -26,9 +27,10 @@ class BrowserBot:
     __downloads: dict = {}
 
     def __init__(self, browser_exec: str):
-        assert browser_exec is None or exists(browser_exec)
+        if platform == "win32":
+            assert browser_exec is None or exists(browser_exec)
 
-        driver_name = browser_exec.split("\\")[-1]
+        driver_name = browser_exec.split("\\" if platform == "win32" else "/")[-1]
         self.__driver_conf = {
             "selenium_driver": self.__browser_drivers.get(driver_name),
             "binary": browser_exec,
@@ -44,6 +46,7 @@ class BrowserBot:
 
     def start(self):
         driver = self.__browser_drivers.get(self.__driver_conf.get("executable_name"))
+        print(driver)
         self.driver = driver(**self.__getProfile(driver), executable_path=self.__driver_conf["executable_path"])
 
         self.driver.maximize_window()

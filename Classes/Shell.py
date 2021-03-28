@@ -18,7 +18,8 @@ class Shell:
     @staticmethod
     def run(program_path: str, *args):
         if platform == "win32":
-            print(*args)
             system(f'start "{program_path}" "{" ".join(list(args))}"')
+        elif platform == "linux":
+            system(f'{program_path} "{" ".join(list(args))}"')
         else:
             raise NotImplemented(f"run command for platform: {platform} not implemented")

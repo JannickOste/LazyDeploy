@@ -1,6 +1,7 @@
 from abc import ABC
 from os import listdir
 from os.path import join
+from sys import platform
 from time import sleep
 
 from pyautogui import click
@@ -35,7 +36,7 @@ class FirefoxActions(IActions, ABC):
         for file in addon_paths:
             extension_path = join(download_path, file)
 
-            Shell.run(self._bot.getConfig("executable_path"), f'"{extension_path}"')
+            Shell.run(self._bot.getConfig("executable_path") if platform == 'win32' else self._bot.getConfig("executable_name"), f'"{extension_path}"')
             sleep(2)
             for i in range(0, 4):
                 loc = (0, 0)

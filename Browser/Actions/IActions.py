@@ -45,8 +45,6 @@ class IActions:
                 self.__target_driver.find_element(By.CSS_SELECTOR, ".download-crx-ok").click()
                 addon_uri = self.__target_driver.find_element(By.CSS_SELECTOR, ".download-crx").get_attribute("href")
                 self.__convertChromeExtension(self.__download(addon_uri))
-
-
     """
     def downloadAddons(self, addon_uris: list) -> None:
         raise NotImplementedError
@@ -113,14 +111,14 @@ class IActions:
             finally:
                 if exists(file_path):
                     print(f"[Wrote file]: {file_name} to {file_path}")
+
                     self._bot.downloads[file_name] = file_path
-                    print(self._bot.downloads)
                 else:
                     print(f"[Failed to write file]: {file_name} to {file_path}")
 
                 return file_path
 
-    def _getExtensionPrefix(self, extracted = False):
+    def _getExtensionPrefix(self, extracted: bool = False):
         from Browser.Actions.FirefoxActions import FirefoxActions
         from Browser.Actions.ChromeActions import ChromeActions
 

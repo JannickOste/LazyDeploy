@@ -14,7 +14,26 @@ class Configuration:
         """
         Load JSON file: {__assetsPath} / {__config_name}
         """
-        cls.__config = json.loads(open(cls.getAssetPath([cls.__config_name]), "r").read())["configuration"]
+        cls.__config = cls.parseConfiguration()
+        print(cls.__config)
+
+    @classmethod
+    def parseConfiguration(cls) -> dict:
+        def replace_value(obj, search_value, rep_value):
+            for k, v in obj.items():
+                if isinstance(v, dict):
+                    obj[k] = rep_value(v, search_value, rep_value)
+                elif isinstance(v, str):
+                    obj[k] = v.replace(search_value, rep_value)
+
+            return obj
+
+        root = json.loads(open(cls.getAssetPath([cls.__config_name]), "r").read())["configuration"]
+
+        for search_key, replace_key in [("{ASSETS}", cls.getAssetPath())]:
+            root.update(replace_value(root, search_key, replace_key))
+
+        return root
 
     @classmethod
     def getAssetPath(cls, suffix: list = None):

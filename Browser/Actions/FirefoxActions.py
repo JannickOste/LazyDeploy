@@ -17,7 +17,6 @@ class FirefoxActions(IActions, ABC):
     def downloadAddons(self, addon_uris: list) -> None:
         for addon_uri in addon_uris:
             web: bool = any([addon_uri.startswith(prefix) for prefix in ["http", "https", "www"]])
-
             if not web:
                 continue
 

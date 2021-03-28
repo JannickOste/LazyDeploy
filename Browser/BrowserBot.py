@@ -19,7 +19,7 @@ class BrowserBot:
     __browser_drivers = \
         {
             "firefox": webdriver.Firefox,
-            "chrome": webdriver.Chrome,
+            "chrome" if platform == "win32" else "chromium": webdriver.Chrome,
             "edge": webdriver.Edge,
             "iexplore": webdriver.Ie
         }
@@ -36,7 +36,7 @@ class BrowserBot:
             "binary": browser_exec,
             "executable_name": driver_name.split(".")[0],
             "executable_file": driver_name,
-            "executable_path": Configuration.getDriverPath(driver_name=driver_name.split(".")[0]),
+            "executable_path": Configuration.getDriverPath(driver_name="chrome" if platform != "win32" and driver_name == "chromium" else driver_name.split(".")[0]),
             **Configuration.getBrowserConfiguration("")
         }
 
@@ -46,7 +46,7 @@ class BrowserBot:
 
     def start(self):
         driver = self.__browser_drivers.get(self.__driver_conf.get("executable_name"))
-        print(driver)
+        print("path", self.__driver_conf["executable_path"])
         self.driver = driver(**self.__getProfile(driver), executable_path=self.__driver_conf["executable_path"])
 
         self.driver.maximize_window()

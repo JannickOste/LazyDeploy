@@ -13,7 +13,6 @@
 				"win32": "chromedriver.exe",
 				"linux": "chromedriver"
 			},
-			
 			"firefox":
 			{
 				"win32": "geckodriver.exe",

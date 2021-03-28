@@ -1,7 +1,9 @@
-import cv2
+from cv2 import matchTemplate, minMaxLoc, TM_SQDIFF_NORMED
 import numpy
 from PIL import Image
 from pyautogui import screenshot
+from pyrect import Box
+from pytesseract import pytesseract
 
 
 class ScreenSearch:
@@ -10,7 +12,8 @@ class ScreenSearch:
         search_box = numpy.asarray(Image.new("RGB", min_area, color=rgb_color))
         desktop_image = numpy.asarray(screenshot())
 
-        result = cv2.matchTemplate(desktop_image, search_box, cv2.TM_SQDIFF_NORMED)
+        result = matchTemplate(desktop_image, search_box, TM_SQDIFF_NORMED)
 
-        return cv2.minMaxLoc(result)[2]
+        return minMaxLoc(result)[2]
+
 

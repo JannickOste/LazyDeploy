@@ -55,6 +55,9 @@ class Registry:
                 return out[value_id]
 
     def __getInstallLinux(self, program_name: str) -> str:
+        if program_name == "chrome" and not platform == "win32":
+            program_name = "chromium"
+
         loc = subprocess.getoutput(f"which {program_name}")
         if len(loc.strip()) > 0:
             return loc

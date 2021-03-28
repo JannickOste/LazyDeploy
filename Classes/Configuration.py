@@ -60,8 +60,6 @@ class Configuration:
         """
         driver_conf: dict = cls.__config.get("drivers")
         if driver_conf is not None:
-            print(driver_conf)
-            print(driver_name)
             assert all([key in driver_conf.keys() for key in (["suffix", driver_name] if platform == "win32"
                                                               else [driver_name])])
 

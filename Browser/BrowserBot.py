@@ -58,6 +58,7 @@ class BrowserBot:
         return self.__driver_conf.get(config_name)
 
     def release(self, clear_downloads: bool = False):
+        print("Releasing agent")
         if self.driver is not None:
             self.driver.quit()
         if clear_downloads:
@@ -92,13 +93,24 @@ class BrowserBot:
         :return:
         """
         profile: dict = {}
-        if isinstance(driver, webdriver.Firefox):
-            profile = {"firefox_options": webdriver.FirefoxProfile()}
-            profile["firefox_options"].set_preference("browser.download.folderList", 2)
-            profile["firefox_options"].set_preference("browser.download.dir", self.getConfig("download_path"))
-            profile["firefox_options"].set_preference("browser.download.manager.showWhenStarting", False)
-            profile["firefox_options"].set_preference("browser.helperApps.neverAsk.saveToDisk", "*")
-        elif isinstance(driver, webdriver.Chrome):
+        if issubclass(driver, webdriver.Firefox):
+            ffprofile = webdriver.FirefoxProfile()
+
+            ffprofile.set_preference("browser.download.folderList", 2)
+            ffprofile.set_preference("browser.download.dir", self.getConfig("download_path"))
+            ffprofile.set_preference("browser.helperApps.alwaysAsk.force", False)
+            ffprofile.set_preference("browser.download.manager.showWhenStarting", False)
+            ffprofile.set_preference("browser.download.manager.focusWhenStarting", False)
+            ffprofile.set_preference("browser.download.manager.useWindow", False)
+            ffprofile.set_preference("browser.download.manager.showAlertOnComplete", False)
+            ffprofile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/x-msdownload")
+
+            ffprofile.binary = self.__driver_conf["binary"]
+
+            profile["firefox_options"] = webdriver.FirefoxOptions()
+            profile["firefox_options"].profile = ffprofile
+        elif issubclass(driver, webdriver.Chrome):
+
             profile = {"chrome_options": webdriver.ChromeOptions()}
             profile["chrome_options"].add_experimental_option("prefs", {
                 'safebrowsing.enabled': True,
@@ -107,9 +119,9 @@ class BrowserBot:
                 "download.directory_upgrade": True,
                 "download.default_directory": Configuration.getBrowserConfiguration("download_path")
             })
-        elif isinstance(driver, webdriver.Ie):
+        elif issubclass(driver, webdriver.Ie):
             profile = {"ie_options": webdriver.IeOptions()}
-
+        print(profile)
         return profile
 
     def __getCapabilities(self, driver: webdriver):

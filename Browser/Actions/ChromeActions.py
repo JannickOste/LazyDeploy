@@ -54,6 +54,8 @@ class ChromeActions(IActions, ABC):
             addon_uri = self._bot.driver.find_element(By.CSS_SELECTOR, ".download-crx").get_attribute("href")
             self.__convertChromeExtension(self.download(addon_uri))
 
+
+
     def __convertChromeExtension(self, file_path):
         print(f"[Converting extension]: {file_path}")
 

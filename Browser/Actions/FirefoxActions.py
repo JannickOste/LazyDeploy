@@ -50,3 +50,5 @@ class FirefoxActions(IActions, ABC):
                     attempts += 1
                 if loc != (0, 0):
                     click(loc[0], loc[1])
+
+            Shell.kill(self._bot.getConfig("executable_path"))

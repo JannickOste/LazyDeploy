@@ -12,10 +12,14 @@ from Browser.Actions.IActions import IActions
 
 
 class ChromeActions(IActions, ABC):
+    """
+        Chrome browser specific actions
+    """
     def __init__(self, bot):
         super().__init__(bot)
 
     def installAddons(self, on_bot: bool = False, addon_paths: list = None):
+
         download_path = self._bot.getConfig("download_path")
         downloads = listdir(download_path)
 

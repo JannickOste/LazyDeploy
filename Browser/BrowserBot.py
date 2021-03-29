@@ -36,7 +36,10 @@ class BrowserBot:
             "binary": browser_exec,
             "executable_name": driver_name.split(".")[0],
             "executable_file": driver_name,
-            "executable_path": Configuration.getDriverPath(driver_name="chrome" if platform != "win32" and driver_name == "chromium" else driver_name.split(".")[0]),
+            "executable_path": Configuration.getDriverPath(
+                                driver_name="chrome" if platform != "win32" and driver_name == "chromium" else
+                                driver_name.split(".")[0]
+                                ),
             **Configuration.getBrowserConfiguration("")
         }
 
@@ -57,18 +60,18 @@ class BrowserBot:
     def getConfig(self, config_name):
         return self.__driver_conf.get(config_name)
 
-    def release(self, clear_downloads: bool = False):
-        print("Releasing agent")
+    def release(self, clear_downloads: bool = False) -> None:
+        """
+            Release the driver if driver has been initiated
+            :param clear_downloads: clear session downloads dictionary
+            :return:
+        """
+
         if self.driver is not None:
             self.driver.quit()
+            print(f"[RELEASING AGENT]: {self.__driver_conf['executable_name']}")
         if clear_downloads:
             self.__downloads.clear()
-
-    def __getActions(self, driver: webdriver) -> IActions:
-        if isinstance(driver, webdriver.Firefox):
-            return FirefoxActions(self)
-        elif isinstance(driver, webdriver.Chrome):
-            return ChromeActions(self)
 
     """
         Properties
@@ -84,6 +87,8 @@ class BrowserBot:
 
     @downloads.setter
     def downloads(self, val):
+        #  todo: add file check
+
         self.__downloads = dict(**self.__downloads, **val)
 
     def __getProfile(self, driver: webdriver):
@@ -92,23 +97,24 @@ class BrowserBot:
         :param driver:
         :return:
         """
+        # todo: preferences not applying (why ? )
         profile: dict = {}
         if issubclass(driver, webdriver.Firefox):
-            ffprofile = webdriver.FirefoxProfile()
+            ff_profile = webdriver.FirefoxProfile()
 
-            ffprofile.set_preference("browser.download.folderList", 2)
-            ffprofile.set_preference("browser.download.dir", self.getConfig("download_path"))
-            ffprofile.set_preference("browser.helperApps.alwaysAsk.force", False)
-            ffprofile.set_preference("browser.download.manager.showWhenStarting", False)
-            ffprofile.set_preference("browser.download.manager.focusWhenStarting", False)
-            ffprofile.set_preference("browser.download.manager.useWindow", False)
-            ffprofile.set_preference("browser.download.manager.showAlertOnComplete", False)
-            ffprofile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/x-msdownload")
+            ff_profile.set_preference("browser.download.folderList", 2)
+            ff_profile.set_preference("browser.download.dir", self.getConfig("download_path"))
+            ff_profile.set_preference("browser.helperApps.alwaysAsk.force", False)
+            ff_profile.set_preference("browser.download.manager.showWhenStarting", False)
+            ff_profile.set_preference("browser.download.manager.focusWhenStarting", False)
+            ff_profile.set_preference("browser.download.manager.useWindow", False)
+            ff_profile.set_preference("browser.download.manager.showAlertOnComplete", False)
+            ff_profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/x-msdownload")
 
-            ffprofile.binary = self.__driver_conf["binary"]
+            ff_profile.binary = self.__driver_conf["binary"]
 
             profile["firefox_options"] = webdriver.FirefoxOptions()
-            profile["firefox_options"].profile = ffprofile
+            profile["firefox_options"].profile = ff_profile
         elif issubclass(driver, webdriver.Chrome):
 
             profile = {"chrome_options": webdriver.ChromeOptions()}
@@ -117,7 +123,7 @@ class BrowserBot:
                 "profile.default_content_settings.popups": 0,
                 "download.prompt_for_download": False,
                 "download.directory_upgrade": True,
-                "download.default_directory": Configuration.getBrowserConfiguration("download_path")
+                "download.default_directory": f'{Configuration.getBrowserConfiguration("download_path")}/'
             })
         elif issubclass(driver, webdriver.Ie):
             profile = {"ie_options": webdriver.IeOptions()}
@@ -125,6 +131,11 @@ class BrowserBot:
         return profile
 
     def __getCapabilities(self, driver: webdriver):
+        """
+            Get default browser capabilities
+            :param driver:
+            :return:
+        """
         # Suppressor for method may be static
         _ = self
 
@@ -139,3 +150,15 @@ class BrowserBot:
             capabilities = capabilities.EDGE.copy()
 
         return capabilities
+
+    def __getActions(self, driver: webdriver) -> IActions:
+        """
+            Get IActions interface for browser
+
+            :param driver:
+            :return:
+        """
+        if isinstance(driver, webdriver.Firefox):
+            return FirefoxActions(self)
+        elif isinstance(driver, webdriver.Chrome):
+            return ChromeActions(self)

@@ -15,6 +15,9 @@ from Classes.Shell import Shell
 
 
 class FirefoxActions(IActions, ABC):
+    """
+        Firefox browser specific actions
+    """
     def __init__(self, bot):
         super().__init__(bot)
 

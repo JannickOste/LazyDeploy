@@ -42,8 +42,8 @@ def downloadExtensions():
             browser.action.downloadExecutables(executables)
             exec_downloaded = True
 
-        # browser.action.downloadAddons(extensionLib.get(agent))
-        # browser.action.installAddons(addon_paths=list(browser.downloads.values()))
+        browser.action.downloadAddons(extensionLib.get(agent))
+        browser.action.installAddons(addon_paths=list(browser.downloads.values()))
 
         browser.release()
 

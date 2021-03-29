@@ -5,6 +5,7 @@ import requests
 from os import listdir
 from os.path import join, exists
 
+import Browser
 from Browser.Exceptions import BrowserNotSupported
 from Classes.Configuration import Configuration
 
@@ -18,24 +19,47 @@ class IActions:
     def __init__(self, bot):
         self._bot = bot
 
+
     """
         Override methods
     """
 
     def downloadAddons(self, addon_uris: list) -> None:
+        """
+            Download extension files based on browser
+
+            :param addon_uris:  url set to addons
+        """
         raise NotImplementedError
 
     def installAddons(self, on_bot: bool = False, addon_paths: list = None) -> None:
+        """
+            (Convert)/install extension files based on browser
+
+            :param on_bot: Install extension on bot
+            :param addon_paths: filepath set to addons
+        """
         raise NotImplementedError
 
     """
         Default methods
     """
 
-    def goto(self, uri):
+    def goto(self, uri) -> None:
+        """
+            Goto a URI (override not advised)
+
+            :param uri: URI to weblocation
+        """
         self._bot.driver.get(uri)
 
     def download(self, uri: str) -> str:
+        """
+            Download a file and fetch filelocation if download was successfully completed (override not advised)
+
+            :param uri: uri to weblocation
+            :return: filepath / None
+        """
         request = requests.get(uri, allow_redirects=True)
         download_path = self._bot.getConfig("download_path")
         if request.status_code == 200:
@@ -64,19 +88,30 @@ class IActions:
                 return file_path
 
     def downloadExecutables(self, exec_uris) -> None:
+        """
+            Download a set of windows executables. (override not advised)
+
+            :param exec_uris: list of tuples with URI / download_btn_text(None for sleep)
+            :return:
+        """
         for uri, target in exec_uris:
             self.goto(uri)
             if target is None:
                 sleep(2)
 
-    def _getExtensionPrefix(self, extracted: bool = False):
+    def _getExtensionPrefix(self, converted: bool = False):
+        """
+            Get extension prefix of browser
+
+            :param converted: Get converted extension
+        """
         from Browser.Actions.FirefoxActions import FirefoxActions
         from Browser.Actions.ChromeActions import ChromeActions
 
         if issubclass(self.__class__, FirefoxActions):
             return "xpi"
         elif issubclass(self.__class__, ChromeActions):
-            return "zip" if extracted else "crx"
+            return "zip" if converted else "crx"
         else:
             raise BrowserNotSupported.BrowerNotSupported(f"No prefix found for "
                                                          f"{self.__class__.__name__.replace('Actions', '')}")

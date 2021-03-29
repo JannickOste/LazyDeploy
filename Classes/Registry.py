@@ -9,6 +9,12 @@ class Registry:
     __registry_id: int = -1
 
     def __getInstallWindows(self, program_name: str):
+        """
+            Get installation path from registry on windows (CURRENTLY ONLY TESTED ON x64)
+            :param program_name:
+            :return:
+        """
+        # TODO: Check x86 registration compatibility
         from winreg import ConnectRegistry, HKEY_LOCAL_MACHINE, EnumKey, OpenKey, QueryValueEx, EnumValue
 
         if self.__registry_id == -1:
@@ -55,6 +61,16 @@ class Registry:
                 return out[value_id]
 
     def __getInstallLinux(self, program_name: str) -> str:
+        """
+            Private: Get installation path for application on linux
+
+            :param program_name: program you want to locate
+            :return: installation path / None
+        """
+        # todo: ADD VERSION CHECK DEBIAN/ETC..
+        # Static method suppressor
+        _ = self
+
         if program_name == "chrome" and not platform == "win32":
             program_name = "chromium"
 
@@ -62,8 +78,14 @@ class Registry:
         if len(loc.strip()) > 0:
             return loc
 
-
     def getInstallLocation(self, program_name: str):
+        """
+            Public: Get installation path (os transparent)
+
+            :param program_name: program name you wish to locate
+            :return:
+        """
+        # TODO: Add some kind of basic mac support (gotta look into hackintosh no mac here)
         if platform == "win32":
             return self.__getInstallWindows(program_name)
         elif platform == "linux":
